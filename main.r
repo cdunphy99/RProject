@@ -1,39 +1,46 @@
+source("customers.R")
 
-
-setClass("warehouse", slots=list(s="numeric", S="numeric",coords="list"))
+setClass("warehouse", slots=list(s="numeric", S="numeric",xcoord="numeric",ycoord="numeric"))
 # s = lower bound of stock before restocking
 # S = starting supply and amount to restock to
 
 setClass ("customer", slots=list(xcoord="numeric", ycoord="numeric", demand="numeric"))
 
+setClass("delivery", slots=list(client="customer", facility="warehouse", distance="numeric"))
 
-primaryW = new("warehouse",s=300,S=1000)
+
+euc.dist <- function(x1, x2) sqrt(sum((x1 - x2) ^ 2)) # euclidean distance formula function
 
 
-generateCustomers=function(){
-  customerAmount= rnorm(1,100,100)
-  customerList = c()
-  for(i in 1:customerAmount){ # generates customers and adds it to a vector of customer objects
-    newCust = new("customer", xcoord=runif(1,0,100), ycoord=runif(1,0,100), demand=rpois(1,1))
-    customerList = c(customerList, newCust)
+assignDeliveries=function(customerList, primaryW){
+  deliveryList=c()
+  for (i in 1:length(customerList)){
+    order=new("delivery", client=customerList[[i]], facility=primaryW, distance= euc.dist(rbind(customerList[[i]]@xcoord,customerList[[i]]@ycoord),rbind(primaryW@xcoord,primaryW@ycoord)))
+    deliveryList=c(deliveryList,order)
   }
-  return (customerList)
-}
-
-plotCustomers=function(toPlot){
-  pdf("hello.pdf")
-  plot(NULL, xlim=c(0,100),ylim=c(0,100))
-
-  for (i in 1:length(toPlot)){  # iterates over the customer vector and plots their locations
-    points(toPlot[[i]]@xcoord,toPlot[[i]]@ycoord)
-  }
+  return(deliveryList)
 }
 
 
-getCustomers=function(){
-  customerList=generateCustomers()
-  plotCustomers(customerList)
+main=function(){
+  primaryW = new("warehouse",s=300,S=1000, xcoord=50, ycoord=50)
+  customerList=getCustomers(primaryW)
+  deliveryList=assignDeliveries(customerList,primaryW)
 }
 
 
-getCustomers()
+
+
+main()
+
+
+
+
+
+
+
+
+
+
+
+

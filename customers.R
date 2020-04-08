@@ -10,7 +10,7 @@ generateCustomers=function(){
 
 
 plotCustomers=function(toPlot){
-  pdf("hello.pdf")
+  pdf("dailyCustomerMaps/hello.pdf")
   plot(NULL, xlim=c(0,100),ylim=c(0,100))
 
   for (i in 1:length(toPlot)){  # iterates over the customer vector and plots their locations
@@ -19,7 +19,7 @@ plotCustomers=function(toPlot){
 }
 
 
-getCustomers=function(primaryW){
+getCustomers=function(primaryW){ # returns list of customers and plots them on the map
   customerList=generateCustomers()
   plotCustomers(customerList)
   points(primaryW@xcoord,primaryW@ycoord, pch=24, col="red", bg="blue")

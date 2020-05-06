@@ -38,17 +38,17 @@ restockWarehouse=function(newCheckpoint){
     }
     
 
-    #update stock of secondary warehouse by importing form primary warehouse
-    for(i in 2:length(newCheckpoint@warehouses)){
-      if(newCheckpoint@warehouses[[i]]@stock<newCheckpoint@warehouses[[i]]@s){
-        restockAmount=newCheckpoint@warehouses[[i]]@S-newCheckpoint@warehouses[[i]]@stock
-        if (restockAmount<newCheckpoint@warehouses[[1]]@stock){
-          restockCost=0.5
-          newCheckpoint@warehouses[[i]]@stock=restockAmount+newCheckpoint@warehouses[[i]]@stock
-          newCheckpoint@warehouses[[1]]@stock=newCheckpoint@warehouses[[1]]@stock-restockAmount
-          print("PRIMARY WAREHOUSE STOCK")
-          print(newCheckpoint@warehouses[[1]]@stock)
-          newCheckpoint@netProfit=newCheckpoint@netProfit-restockAmount*restockCost
+    if(length(newCheckpoint@warehouses)!=1){
+      #update stock of secondary warehouse by importing form primary warehouse
+      for(i in 2:(length(newCheckpoint@warehouses))){
+        if(newCheckpoint@warehouses[[i]]@stock<newCheckpoint@warehouses[[i]]@s){
+          restockAmount=newCheckpoint@warehouses[[i]]@S-newCheckpoint@warehouses[[i]]@stock
+          if (restockAmount<newCheckpoint@warehouses[[1]]@stock){
+            restockCost=0.5
+            newCheckpoint@warehouses[[i]]@stock=restockAmount+newCheckpoint@warehouses[[i]]@stock
+            newCheckpoint@warehouses[[1]]@stock=newCheckpoint@warehouses[[1]]@stock-restockAmount
+            newCheckpoint@netProfit=newCheckpoint@netProfit-restockAmount*restockCost
+          }
         }
       }
     }
